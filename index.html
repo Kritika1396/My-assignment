@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Employee Record</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container text-center">
+<a class="btn btn-outline-success mt-3" data-toggle="modal" data-target="#employeeForm">New Employee</a>
+</div>
+
+<!---Form Modal-->
+
+<!-- Modal -->
+<div class="modal fade" id="employeeForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h5 class="modal-title" id="exampleModalLabel">New Employee Detail Form</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+     <div class="modal-body">
+
+	  <form action="javascript:void(0);" id="employee" method="POST" id="detail" onsubmit="app.Add()">
+	   <div class="form-group">
+	    <label for="inputName">Name: </label>
+	    <input type="text" class="form-control" name="empName" placeholder="Enter Name..">
+	   </div>
+
+	   <div class="form-group">
+	    <label for="inputId">Employee Id: </label>
+	    <input type="text" class="form-control" name="empId" placeholder="Enter Employee Id..">
+	   </div>
+
+	   <div class="form-group">
+	   <label>Select Department: </label>
+	   	<select class="custom-select" name="empDepartment">
+	     <option>Select Department</option>
+	   	<option value="Front End">Front End</option>
+	   	<option value="Back End">Back End</option>	
+	   	<option value="Operation">Operation</option>
+	   	<option value="Human Resource">Human Resource</option>
+	   </select>
+	   </div>
+
+
+	   <div class="form-group">
+	    <label for="inputEmail">Email: </label>
+	    <input type="email" class="form-control" name="empMail" placeholder="Enter email...">
+	  </div>
+	   
+	   <div class="form-group">
+	    <label for="inputDoj">Date Of Joining: </label>
+	    <input type="date" class="form-control" name="empDoj">
+	  </div>
+	   
+	    <button type="button" class="btn btn-secondary" onclick="myFun()" >Clear</button>
+        <button type="submit" id="submit" class="btn btn-primary" onclick="return validatevalue();" >Submit Details</button>
+     
+	</form>
+
+      </div>
+  </div>
+</div>
+</div>
+<!---End Of Modal-->
+
+<div class="container text-center mt-5" id="data-table">
+	<h3>New Hiring Details</h3>
+	<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Name</th>
+      <th scope="col">EmployeeID</th>
+      <th scope="col">Department</th>
+      <th scope="col">Email Id</th>
+      <th scope="col">DOJ</th>
+    </tr>
+  </thead>
+  <tbody id="data-Row">
+  
+  </tbody>
+</table>
+</div>
+
+<!--- CRUD Script  start-->
+
+
+<script>
+var app = new function() {
+
+  this.el = document.getElementById('data-Row');
+  
+  this.Records = [];
+  
+  this.FetchAll = function() {
+    var data = '';
+
+    if (this.Records.length > 0) {
+      for (i = 0; i < this.Records.length; i++) {
+        data += '<tr>';
+        data += '<th scope="row"><button onclick="app.Delete(' + i + ')">X</button></th>';
+        
+        data += '<td>' + this.Records[i].empName + '</td>';
+        data += '<td>' + this.Records[i].empId + '</td>';
+        data += '<td>' + this.Records[i].empDepartment + '</td>';
+        data += '<td>' + this.Records[i].empMail + '</td>';
+        data += '<td>' + this.Records[i].empDoj + '</td>';
+        
+        data += '</tr>';
+      }
+    }
+
+    return this.el.innerHTML = data;
+  };
+
+  this.Add = function () {
+  
+       let ary=$('form').serializeArray();
+       let obj={};
+
+       for(let i=0;i<ary.length;i++)
+       {
+         obj[ary[i].name]=ary[i].value;
+       }
+       
+       if(obj)
+       {
+         this.Records.push(obj);
+          this.FetchAll();
+       
+          obj={};
+       }
+   $('#employeeForm').modal('hide');
+
+  };
+
+
+  this.Delete = function (item) {
+    // Delete the current row
+    this.Records.splice(item, 1);
+    // Display the new list
+    this.FetchAll();
+  };
+  
+}
+
+app.FetchAll();
+
+
+</script>
+
+<script type="text/javascript">
+  function validatevalue()
+{
+    var c=0;
+    $('input').each(function(){
+        if($(this).val()==""){
+            alert("Incomplete form cannot be submitted! ");
+            c++;
+            return false;
+             
+        }
+    });
+    
+    if(c==0)
+    {
+    return true;
+    }
+    else{
+    return false;}
+}
+</script>
+
+<!--- CRUD Script ending -->
+
+
+
+
+<!--Jquery start-->
+<script src= 
+"https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"> 
+</script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+
+<script>
+	function myFun()
+	{
+		document.getElementById("employee").reset();
+	}
+
+</script>
+
+
+<!--jquery end-->
+
+
+<!-- bootstrap -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>	
+<!--bootstrap End-->
+</body>
+</html>
